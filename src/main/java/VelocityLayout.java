@@ -18,8 +18,10 @@ import java.io.StringWriter;
 public class VelocityLayout extends PatternLayout {
 
 
-    StringBuffer sbuf = new StringBuffer(128);
     private String pattern;
+    public VelocityLayout(String newPattern){
+        pattern = newPattern;
+    }
 
 
     public void activateOptions() {
@@ -41,7 +43,7 @@ public class VelocityLayout extends PatternLayout {
         t.initDocument();
 
         VelocityContext vc = new VelocityContext();
-        vc.put("c", event.fqnOfCategoryClass);
+        vc.put("c", event.fqnOfCategoryClass); // What to use here???
         vc.put("d", event.getTimeStamp());
         vc.put("m", event.getMessage());
         vc.put("p", event.getLevel());
@@ -58,9 +60,7 @@ public class VelocityLayout extends PatternLayout {
     public boolean ignoresThrowable() {
         return true;
     }
-    public VelocityLayout(String newPattern){
-       pattern = newPattern;
-    }
+
 
     public void setPattern(String newPattern) {
         pattern = newPattern;
