@@ -6,8 +6,8 @@ public class test {
         BasicConfigurator.configure();
         Logger l = Logger.getLogger("test");
 
-        MemAppender app = new MemAppender(100);
-        app.setLayout(new SimpleLayout());
+      MemAppender app = MemAppender.getInstance();
+       // app.setLayout(new SimpleLayout());
 
 
         l.addAppender(app);
@@ -19,6 +19,8 @@ public class test {
         l.trace("fourth shouldn't be printed");
 
         app.printLogs();
+
+
     }
 }
 

@@ -6,12 +6,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+
 public class MemAppender extends AppenderSkeleton {
     private Long discardedLogs = 0L;
     private List<LoggingEvent> logsList;
     private final int maxSize;
+    private static MemAppender instance;
 
-    public MemAppender (int size) {
+    private MemAppender (int size) {
         super();
         logsList = new ArrayList<>();
         maxSize = size;
@@ -22,7 +24,7 @@ public class MemAppender extends AppenderSkeleton {
         if (logsList.size() < maxSize - 1) {
             logsList.add(loggingEvent);
         } else {
-            Long temp = logsList.get(0).getTimeStamp();
+            long temp = logsList.get(0).getTimeStamp();
             int j = 0;
             for (int i = 0; i < logsList.size(); i++) {
                 if (temp < logsList.get(i).getTimeStamp()) {
@@ -63,16 +65,29 @@ public class MemAppender extends AppenderSkeleton {
 
     //Returns a list of unmodifiable strings. Generated using a layout stored in the MemAppender
     public List<String> getEventStrings () {
-
-        return null;
+        List<String> logsListString = new ArrayList<>();
+        for (LoggingEvent loggingEvent : logsList) {
+            if (getLayout() != null) {
+                logsListString.add(getLayout().format(loggingEvent));
+            } else {
+                //TODO Implement default layout
+            }
+        }
+        return logsListString;
     }
 
     //Prints Logging Events to the console using the layout and then clear the logs from its memory
     public void printLogs () {
-        for (int i = 0; i < logsList.size() ; i++) {
-            System.out.println(logsList.get(i).getMessage());
+
+        for (LoggingEvent loggingEvent : logsList) {
+            if (getLayout() != null) {
+                System.out.println(getLayout().format(loggingEvent));
+            } else {
+                printNoLayoutGiven(logsList);
+            }
         }
-        for (int i = 0; i < logsList.size(); i++){
+
+        for (int i = 0; i < logsList.size(); i++) {
             logsList.remove(i);
             increaseDiscardedLogCount();
         }
@@ -82,8 +97,19 @@ public class MemAppender extends AppenderSkeleton {
         discardedLogs++;
     }
 
-
-    public long getDiscardedLogCount() {
+    public long getDiscardedLogCount () {
         return discardedLogs;
+    }
+
+    private void printNoLayoutGiven (List<LoggingEvent> logsList) {
+        //TODO Implement default layout
+    }
+
+    public static MemAppender getInstance () {
+        if (instance == null) {
+            return instance = new MemAppender(100);
+        } else {
+            return instance;
+        }
     }
 }
