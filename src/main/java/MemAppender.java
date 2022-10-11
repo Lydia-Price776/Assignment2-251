@@ -23,15 +23,17 @@ public class MemAppender extends AppenderSkeleton {
         if (logsList.size() <= maxSize - 1) {
             logsList.add(loggingEvent);
         } else {
-            long temp = logsList.get(0).getTimeStamp();
-            int j = 0;
+            /*  long temp = logsList.get(0).getTimeStamp();
+
+           int j = 0;
             for (int i = 0; i < logsList.size(); i++) { // May not need this as the oldest log with always be at index 0?
                 if (temp > logsList.get(i).getTimeStamp()) {
                     temp = logsList.get(i).getTimeStamp();
                     j = i;
                 }
-            }
-            logsList.remove(j);
+            }*/
+            //The log in index position 0 will always be the oldest
+            logsList.remove(0);
             increaseDiscardedLogCount();
             logsList.add(loggingEvent);
         }
