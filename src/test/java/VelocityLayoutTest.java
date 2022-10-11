@@ -42,9 +42,9 @@ class VelocityLayoutTest {
 
     @Test
     void formatsLoggingEventCorrectly () {
-        LoggingEvent event = new LoggingEvent(null, logger, 0L, Level.DEBUG,
+        LoggingEvent event = new LoggingEvent(null, logger, 16666660090L, Level.DEBUG,
                 "Test Logging Event", null);
-        String testString = "[DEBUG] (main) Thu Jan 01 12:00:00 NZST 1970: Test Logging Event \n";
+        String testString = "[DEBUG] (main) Mon Jul 13 09:37:40 NZST 1970: Test Logging Event \n";
         assertEquals(testString, velocityLayout.format(event));
     }
 
