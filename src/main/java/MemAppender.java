@@ -12,20 +12,20 @@ public class MemAppender extends AppenderSkeleton {
     private int maxSize;
     private static MemAppender instance;
 
-    private MemAppender(int size) {
+    private MemAppender (int size) {
         super();
         logsList = new ArrayList<>();
         maxSize = size;
     }
 
     @Override
-    protected void append(LoggingEvent loggingEvent) {
+    protected void append (LoggingEvent loggingEvent) {
         if (logsList.size() <= maxSize - 1) {
             logsList.add(loggingEvent);
         } else {
             long temp = logsList.get(0).getTimeStamp();
             int j = 0;
-            for (int i = 0; i < logsList.size(); i++) {
+            for (int i = 0; i < logsList.size(); i++) { // May not need this as the oldest log with always be at index 0?
                 if (temp > logsList.get(i).getTimeStamp()) {
                     temp = logsList.get(i).getTimeStamp();
                     j = i;
@@ -38,31 +38,31 @@ public class MemAppender extends AppenderSkeleton {
     }
 
     @Override
-    public Layout getLayout() {
+    public Layout getLayout () {
         return super.getLayout();
     }
 
     @Override
-    public void close() {
+    public void close () {
     }
 
     @Override
-    public boolean requiresLayout() {
+    public boolean requiresLayout () {
         return false;
     }
 
     @Override
-    public void setLayout(Layout layout) {
+    public void setLayout (Layout layout) {
         super.setLayout(layout);
     }
 
     //Returns a list of unmodifiable LoggingEvents
-    public List<LoggingEvent> getCurrentLogs() {
+    public List<LoggingEvent> getCurrentLogs () {
         return Collections.unmodifiableList(logsList);
     }
 
     //Returns a list of unmodifiable strings. Generated using a layout stored in the MemAppender
-    public List<String> getEventStrings() {
+    public List<String> getEventStrings () {
         List<String> logsListString = new ArrayList<>();
         for (LoggingEvent loggingEvent : logsList) {
             if (getLayout() != null) {
@@ -75,7 +75,7 @@ public class MemAppender extends AppenderSkeleton {
     }
 
     //Prints Logging Events to the console using the layout and then clear the logs from its memory
-    public void printLogs() {
+    public void printLogs () {
         for (LoggingEvent loggingEvent : logsList) {
             if (getLayout() != null) {
                 System.out.println(getLayout().format(loggingEvent));
@@ -90,25 +90,28 @@ public class MemAppender extends AppenderSkeleton {
     }
 
     //Tracks number of discarded logs
-    private void increaseDiscardedLogCount() {
+    private void increaseDiscardedLogCount () {
         discardedLogs++;
     }
 
-    public void setMaxSize(int maxSize) {
+    private void setMaxSize (int maxSize) {
         this.maxSize = maxSize;
     }
 
-    public long getDiscardedLogCount() {
+    public long getDiscardedLogCount () {
         return discardedLogs;
     }
 
-    public void discardedLogsReset() {
-         discardedLogs = 0L;
+    public void discardedLogsReset () {
+        discardedLogs = 0L;
     }
-    public void clearMemory(){
+
+    public void clearMemory () {
         logsList.clear();
+        discardedLogsReset();
     }
-    public static MemAppender getInstance(int size) {
+
+    public static MemAppender getInstance (int size) {
         if (instance == null) {
             return instance = new MemAppender(size);
         } else {
