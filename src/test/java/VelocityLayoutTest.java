@@ -41,14 +41,6 @@ class VelocityLayoutTest {
     }
 
     @Test
-    void formatsLoggingEventCorrectly () {
-        LoggingEvent event = new LoggingEvent(null, logger, 16666660090L, Level.DEBUG,
-                "Test Logging Event", null);
-        String testString = "[DEBUG] (main) Mon Jul 13 09:37:40 NZST 1970: Test Logging Event \n";
-        assertEquals(testString, velocityLayout.format(event));
-    }
-
-    @Test
     void layoutWorksWithMemAppender () {
         logger.addAppender(memAppender);
         memAppender.setLayout(velocityLayout);
