@@ -14,6 +14,7 @@ import org.apache.velocity.runtime.resource.util.StringResourceRepository;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.Date;
 
 public class VelocityLayout extends PatternLayout {
 
@@ -28,32 +29,32 @@ public class VelocityLayout extends PatternLayout {
     }
 
     public String format(LoggingEvent event) {
-        RuntimeServices rs = RuntimeSingleton.getRuntimeServices();
-        StringReader sr = new StringReader(pattern);
-        SimpleNode sn = null;
+        RuntimeServices runtimeServices = RuntimeSingleton.getRuntimeServices();
+        StringReader reader = new StringReader(pattern);
+        SimpleNode node = null;
         try {
-            sn = rs.parse(sr, "Event Information");
+            node = runtimeServices.parse(reader, "Event Information");
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
 
         Template t = new Template();
-        t.setRuntimeServices(rs);
-        t.setData(sn);
+        t.setRuntimeServices(runtimeServices);
+        t.setData(node);
         t.initDocument();
 
-        VelocityContext vc = new VelocityContext();
-        vc.put("c", event.fqnOfCategoryClass); // What to use here???
-        vc.put("d", event.getTimeStamp());
-        vc.put("m", event.getMessage());
-        vc.put("p", event.getLevel());
-        vc.put("t", event.getThreadName());
-        vc.put("n", "\n");
+        VelocityContext context = new VelocityContext();
+        context.put("c", event.getLogger()); // What to use here???
+        context.put("d", new Date(event.getTimeStamp()));
+        context.put("m", event.getMessage());
+        context.put("p", event.getLevel());
+        context.put("t", event.getThreadName());
+        context.put("n", "\n");
 
-        StringWriter sw = new StringWriter();
-        t.merge(vc, sw);
+        StringWriter writer = new StringWriter();
+        t.merge(context, writer);
 
-        return sw.toString();
+        return writer.toString();
     }
 
 
