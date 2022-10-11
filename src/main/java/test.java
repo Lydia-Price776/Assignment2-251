@@ -6,7 +6,7 @@ public class test {
         BasicConfigurator.configure();
         Logger l = Logger.getLogger("test");
 
-        MemAppender app = MemAppender.getInstance();
+        MemAppender app = MemAppender.getInstance(50);
         app.setLayout(new VelocityLayout("[$p] $c $d: $m"));
 
 

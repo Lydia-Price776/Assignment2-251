@@ -6,11 +6,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
 public class MemAppender extends AppenderSkeleton {
     private Long discardedLogs = 0L;
     private List<LoggingEvent> logsList;
-    private final int maxSize;
+    private int maxSize;
     private static MemAppender instance;
 
     private MemAppender(int size) {
@@ -21,7 +20,7 @@ public class MemAppender extends AppenderSkeleton {
 
     @Override
     protected void append(LoggingEvent loggingEvent) {
-        if (logsList.size() < maxSize - 1) {
+        if (logsList.size() <= maxSize - 1) {
             logsList.add(loggingEvent);
         } else {
             long temp = logsList.get(0).getTimeStamp();
@@ -45,7 +44,6 @@ public class MemAppender extends AppenderSkeleton {
 
     @Override
     public void close() {
-
     }
 
     @Override
@@ -91,18 +89,30 @@ public class MemAppender extends AppenderSkeleton {
         }
     }
 
+    //Tracks number of discarded logs
     private void increaseDiscardedLogCount() {
         discardedLogs++;
+    }
+
+    public void setMaxSize(int maxSize) {
+        this.maxSize = maxSize;
     }
 
     public long getDiscardedLogCount() {
         return discardedLogs;
     }
 
-    public static MemAppender getInstance() {
+    public void discardedLogsReset() {
+         discardedLogs = 0L;
+    }
+    public void clearMemory(){
+        logsList.clear();
+    }
+    public static MemAppender getInstance(int size) {
         if (instance == null) {
-            return instance = new MemAppender(100);
+            return instance = new MemAppender(size);
         } else {
+            instance.setMaxSize(size);
             return instance;
         }
     }
