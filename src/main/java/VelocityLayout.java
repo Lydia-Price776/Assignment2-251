@@ -16,6 +16,7 @@ public class VelocityLayout extends Layout {
     public void activateOptions() {
     }
 
+
     public String format(LoggingEvent event) {
         VelocityContext context = new VelocityContext();
         context.put("c", event.getLogger()); // Not sure about the category output

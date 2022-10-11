@@ -28,6 +28,8 @@ class MemAppenderTest {
     @BeforeEach
     void resetAppender () {
         appender.clearMemory();
+        appender.setMaxSize(10);
+        appender.setLayout(null);
     }
 
     @Test
@@ -61,7 +63,6 @@ class MemAppenderTest {
     @Test
     public void testAppendWithDiscardedLogs () {
         add30LogsToAppender();
-        appender.getCurrentLogs().size();
         assumeTrue(appender.getCurrentLogs().size() == 10);
         assertEquals("Info 6", appender.getCurrentLogs().get(0).getMessage());
     }
@@ -108,23 +109,42 @@ class MemAppenderTest {
         assertTrue(output.contains("Test Debug Log"));
     }
 
+    @Test
+    public void adjustMaxSizeLessThanOriginalSize (){
+        add10LogsToAppender();
+        appender.setMaxSize(5);
+        assumeTrue(appender.getEventStrings().size() == 5);
+        assertEquals("Trace 6" ,appender.getEventStrings().get(0));
+    }
+
+    @Test
+    public void adjustMaxSizeGreaterThanOriginalSize (){
+        add10LogsToAppender();
+        appender.setMaxSize(20);
+        assumeTrue(appender.getEventStrings().size() <= 20);
+        assertEquals(20, appender.getMaxSize());
+    }
+
+    @Test
+    public void addLogsAfterMaxSizeChanged (){
+        add10LogsToAppender();
+        appender.setMaxSize(20);
+        add30LogsToAppender();
+        assumeTrue(appender.getEventStrings().size() == 20);
+        assertEquals("Error 3" ,appender.getEventStrings().get(0));
+    }
     private static String getOutputFromPrintLogs () {
-        PrintStream printStream = System.out;
         ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
         System.setOut(new PrintStream(byteOutputStream));
         appender.printLogs();
-        System.setOut(printStream);
-        String output = byteOutputStream.toString();
-        return output;
+        return byteOutputStream.toString();
     }
-
 
     private static void add10LogsToAppender () {
         for (int i = 0; i < 10; i++) {
             logger.trace("Trace " + (i + 1));
         }
     }
-
 
     private static void add30LogsToAppender () {
         for (int i = 0; i < 10; i++) {

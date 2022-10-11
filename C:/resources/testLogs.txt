@@ -1,0 +1,2 @@
+[TRACE] (main) Tue Oct 11 19:11:26 NZDT 2022: Testing Trace Log 
+[TRACE] (main) Tue Oct 11 19:12:47 NZDT 2022: Testing Trace Log 
