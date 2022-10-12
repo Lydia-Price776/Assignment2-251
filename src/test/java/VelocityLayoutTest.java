@@ -1,9 +1,5 @@
 import org.apache.log4j.*;
-import org.apache.log4j.spi.LoggingEvent;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -34,10 +30,11 @@ class VelocityLayoutTest {
         logger.removeAllAppenders();
     }
 
-    @AfterEach
-    void removeTestData () throws IOException {
+    @AfterAll
+    static void removeTestData () throws IOException {
         Files.deleteIfExists(
                 Paths.get("testLogs.txt"));
+        logger.removeAllAppenders();
     }
 
     @Test

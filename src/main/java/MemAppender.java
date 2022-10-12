@@ -4,6 +4,7 @@ import org.apache.log4j.spi.LoggingEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 public class MemAppender extends AppenderSkeleton {
@@ -14,7 +15,7 @@ public class MemAppender extends AppenderSkeleton {
 
     private MemAppender (int size) {
         super();
-        logsList = new ArrayList<>();
+        logsList = new LinkedList<>();
         maxSize = size;
     }
 
@@ -126,5 +127,9 @@ public class MemAppender extends AppenderSkeleton {
 
     public int getMaxSize () {
         return maxSize;
+    }
+
+    public void  setLinkedList(){
+        logsList = new LinkedList<>();
     }
 }
