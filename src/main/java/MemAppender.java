@@ -4,7 +4,6 @@ import org.apache.log4j.spi.LoggingEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 public class MemAppender extends AppenderSkeleton {
@@ -14,9 +13,10 @@ public class MemAppender extends AppenderSkeleton {
     private static MemAppender instance;
 
 
-    private MemAppender(List list) {
+    private MemAppender (List list) {
         logsList = list;
     }
+
     @Override
     protected void append (LoggingEvent loggingEvent) {
 
@@ -41,9 +41,9 @@ public class MemAppender extends AppenderSkeleton {
 
     @Override
     public void close () {
-       // logsList.clear();
-       // discardedLogs = 0L;
-        //maxSize = -1;
+        logsList.clear();
+        discardedLogs = 0L;
+        maxSize = -1;
     }
 
     @Override
@@ -126,7 +126,7 @@ public class MemAppender extends AppenderSkeleton {
         return maxSize;
     }
 
-    private void setListType(){
+    private void setListType () {
 
     }
 }

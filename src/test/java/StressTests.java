@@ -3,7 +3,6 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -12,7 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 public class StressTests {
     private static final Logger logger = Logger.getRootLogger();
@@ -21,6 +19,7 @@ public class StressTests {
     @BeforeAll
     public static void setup () {
         BasicConfigurator.configure();
+        logger.setAdditivity(false);
         VelocityLayout velocityLayout = new VelocityLayout("[$p] ($t) $d: $m $n");
 
     }
@@ -43,19 +42,19 @@ public class StressTests {
         memAppender.setMaxSize(size);
         logger.addAppender(memAppender);
         for (int i = 0; i < 100000; i++) {
-            logger.error("Test number " + i,new Exception());
+            logger.error("Test number " + i);
         }
         memAppender.close();
     }
 
     @ParameterizedTest
     @ValueSource(ints = {1, 10, 1000, 10000, 100000, 1000000})
-    public void memAppenderAppendStressTestLinkedList (int size) throws InterruptedException {
+    public void memAppenderAppendStressTestLinkedList (int size) {
         memAppender = MemAppender.getInstance(new LinkedList());
         memAppender.setMaxSize(size);
         logger.addAppender(memAppender);
         for (int i = 0; i < 100000; i++) {
-            logger.error("Test number " + i, new Exception());
+            logger.error("Test number " + i);
         }
         memAppender.close();
     }
@@ -115,16 +114,5 @@ public class StressTests {
         });
     }
 */
-   /* @Test
-    public void random () throws InterruptedException {
-        List<String> strings = new ArrayList<>();
-        Thread.sleep(10000);
-        int i = 0;
-        while (true) {
-            i += 5;
-            strings.add(i + "");
-            System.err.println(i);
-        }
-    }
-*/
+
 }
