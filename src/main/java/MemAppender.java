@@ -10,17 +10,20 @@ import java.util.List;
 public class MemAppender extends AppenderSkeleton {
     private Long discardedLogs = 0L;
     private List<LoggingEvent> logsList;
-    private int maxSize;
+    private int maxSize = -1;
     private static MemAppender instance;
 
-    private MemAppender (int size) {
-        super();
-        logsList = new LinkedList<>();
-        maxSize = size;
-    }
 
+    private MemAppender(List list) {
+        logsList = list;
+    }
     @Override
     protected void append (LoggingEvent loggingEvent) {
+
+        //maxSize has not been supplied
+        if (maxSize == -1) {
+            logsList.add(loggingEvent);
+        }
         if (logsList.size() <= maxSize - 1) {
             logsList.add(loggingEvent);
         } else {
@@ -38,6 +41,9 @@ public class MemAppender extends AppenderSkeleton {
 
     @Override
     public void close () {
+       // logsList.clear();
+       // discardedLogs = 0L;
+        //maxSize = -1;
     }
 
     @Override
@@ -83,7 +89,7 @@ public class MemAppender extends AppenderSkeleton {
         }
     }
 
-    private void adjustLoggingListSize () {
+    private void adjustLogListSize () {
         if (logsList.size() == 0) {
             return;
         }
@@ -100,27 +106,18 @@ public class MemAppender extends AppenderSkeleton {
 
     public void setMaxSize (int maxSize) {
         this.maxSize = maxSize;
-        adjustLoggingListSize();
+        adjustLogListSize();
     }
 
     public long getDiscardedLogCount () {
         return discardedLogs;
     }
 
-    public void discardedLogsReset () {
-        discardedLogs = 0L;
-    }
 
-    public void clearMemory () {
-        logsList.clear();
-        discardedLogsReset();
-    }
-
-    public static MemAppender getInstance (int size) {
+    public static MemAppender getInstance (List list) {
         if (instance == null) {
-            return instance = new MemAppender(size);
+            return instance = new MemAppender(list);
         } else {
-            instance.setMaxSize(size);
             return instance;
         }
     }
@@ -129,7 +126,7 @@ public class MemAppender extends AppenderSkeleton {
         return maxSize;
     }
 
-    public void  setLinkedList(){
-        logsList = new LinkedList<>();
+    private void setListType(){
+
     }
 }

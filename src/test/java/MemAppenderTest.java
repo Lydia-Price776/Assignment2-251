@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -16,7 +17,7 @@ class MemAppenderTest {
 
     @BeforeAll
     static void setUp () {
-        appender = MemAppender.getInstance(10);
+        appender = MemAppender.getInstance(new ArrayList());
         BasicConfigurator.configure();
         logger = Logger.getLogger("Test Logger");
         logger.addAppender(appender);
@@ -24,12 +25,11 @@ class MemAppenderTest {
         logger.setLevel(Level.TRACE);
     }
 
-    //Clears the memory of the appender for a fresh start for each test
     @BeforeEach
     void resetAppender () {
-        appender.clearMemory();
-        appender.setMaxSize(10);
+        appender.close();
         appender.setLayout(null);
+        appender.setMaxSize(10);
     }
 
     @Test
