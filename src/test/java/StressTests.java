@@ -40,12 +40,12 @@ public class StressTests {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {1, 10, 1000, 10000, 100000, 1000000})
+    @ValueSource(ints = {1, 10, 1000, 10000, 100000,1000000})
     public void memAppenderAppendStressTestArrayList (int size) throws InterruptedException {
         memAppender = MemAppender.getInstance(new ArrayList<>());
         memAppender.setMaxSize(size);
         logger.addAppender(memAppender);
-        Thread.sleep(10000);
+      //  Thread.sleep(10000);
         for (int i = 0; i < 100000; i++) {
             logger.error("Test number " + i, new Exception());
         }
@@ -53,12 +53,12 @@ public class StressTests {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {1, 10, 1000, 10000, 100000})
+    @ValueSource(ints = {1, 10, 1000, 10000, 100000, 1000000})
     public void memAppenderAppendStressTestLinkedList (int size) throws InterruptedException {
         memAppender = MemAppender.getInstance(new LinkedList());
         memAppender.setMaxSize(size);
         logger.addAppender(memAppender);
-        Thread.sleep(10000);
+        //Thread.sleep(10000);
         for (int i = 0; i < 100000; i++) {
             logger.error("Test number " + i, new Exception());
         }
@@ -77,7 +77,7 @@ public class StressTests {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {1, 10, 100, 1000, 10000, 100000})
+    @ValueSource(ints = {1, 10, 1000, 10000, 100000})
     public void ConsoleAppenderStressTest (int logNum) {
         ConsoleAppender consoleAppender = new ConsoleAppender(new SimpleLayout());
         logger.addAppender(consoleAppender);
