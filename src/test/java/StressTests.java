@@ -9,16 +9,20 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import static org.junit.jupiter.api.Assertions.assertTimeout;
+
 public class StressTests {
-    private static final Logger logger = Logger.getRootLogger();
+    private static Logger logger;
     private static MemAppender memAppender;
 
     @BeforeAll
     public static void setup () {
         BasicConfigurator.configure();
+        logger = Logger.getLogger("Tester");
         logger.setAdditivity(false);
         VelocityLayout velocityLayout = new VelocityLayout("[$p] ($t) $d: $m $n");
 
@@ -37,82 +41,50 @@ public class StressTests {
 
     @ParameterizedTest
     @ValueSource(ints = {1, 10, 1000, 10000, 100000, 1000000})
-    public void memAppenderAppendStressTestArrayList (int size) {
+    public void memAppenderAppendStressTestArrayList (int size) throws InterruptedException {
         memAppender = MemAppender.getInstance(new ArrayList<>());
         memAppender.setMaxSize(size);
         logger.addAppender(memAppender);
+        Thread.sleep(10000);
         for (int i = 0; i < 100000; i++) {
-            logger.error("Test number " + i);
+            logger.error("Test number " + i, new Exception());
         }
         memAppender.close();
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {1, 10, 1000, 10000, 100000, 1000000})
-    public void memAppenderAppendStressTestLinkedList (int size) {
+    @ValueSource(ints = {1, 10, 1000, 10000, 100000})
+    public void memAppenderAppendStressTestLinkedList (int size) throws InterruptedException {
         memAppender = MemAppender.getInstance(new LinkedList());
         memAppender.setMaxSize(size);
         logger.addAppender(memAppender);
+        Thread.sleep(10000);
         for (int i = 0; i < 100000; i++) {
-            logger.error("Test number " + i);
+            logger.error("Test number " + i, new Exception());
         }
         memAppender.close();
     }
 
-/*
     @ParameterizedTest
-    @ValueSource(ints = {1, 10, 1000, 100000, 1000000})
-    void arrayListStressTestParameterized (int size) {
-        memAppender = MemAppender.getInstance(new ArrayList<>());
-        memAppender.setLayout(new VelocityLayout("[$p] $c $d: $m"));
-        logger.addAppender(memAppender);
-        memAppender.setMaxSize(size);
-
-        for (int i = 0; i < 100_000; i++) {
-            logger.error("Testing" + i, new Exception());
-        }
-
-        memAppender.close();
-    }
-
-    @ParameterizedTest
-    @ValueSource(ints = {1, 10, 100, 1000, 10000, 100000, 1000000})
-    public void memAppenderAppendParameterizedTestLinkedList (int param) {
-        MemAppender memAppender = MemAppender.getInstance();
-        memAppender.setLinkedList();
-        logger.addAppender(memAppender);
-        assertTimeout(Duration.ofSeconds(1), () -> {
-            for (int i = 0; i < param; i++) {
-                logger.trace("Test Trace Log " + (i + 1));
-            }
-        });
-    }
-
-    @ParameterizedTest
-    @ValueSource(ints = {1, 10, 100, 1000, 10000, 100000, 1000000})
-    public void ConsoleAppenderParameterizedTest (int param) {
-        ConsoleAppender consoleAppender = new ConsoleAppender(new SimpleLayout());
-        logger.addAppender(consoleAppender);
-        logger.setAdditivity(false);
-        assertTimeout(Duration.ofSeconds(5), () -> {
-            for (int i = 0; i < param; i++) {
-                logger.trace("Test Trace Log " + (i + 1));
-            }
-        });
-    }
-
-    @ParameterizedTest
-    @ValueSource(ints = {1, 10, 100, 1000, 10000, 100000, 1000000})
-    public void FileAppenderParameterizedTest (int param) throws IOException {
+    @ValueSource(ints = {1, 10, 1000, 10000, 100000})
+    public void FileAppenderStressTest (int logNum) throws IOException, InterruptedException {
         FileAppender fileAppender = new FileAppender(new SimpleLayout(), "testLogs.txt");
         logger.addAppender(fileAppender);
-        logger.setAdditivity(false);
-        assertTimeout(Duration.ofSeconds(1), () -> {
-            for (int i = 0; i < param; i++) {
-                logger.trace("Test Trace Log " + (i + 1));
-            }
-        });
+        Thread.sleep(10000);
+        for (int i = 0; i < logNum; i++) {
+            logger.error("Test number " + i, new Exception());
+        }
     }
-*/
 
+    @ParameterizedTest
+    @ValueSource(ints = {1, 10, 100, 1000, 10000, 100000})
+    public void ConsoleAppenderStressTest (int logNum) {
+        ConsoleAppender consoleAppender = new ConsoleAppender(new SimpleLayout());
+        logger.addAppender(consoleAppender);
+        for (int i = 0; i < logNum; i++) {
+            logger.error("Test number " + i, new Exception());
+        }
+    }
 }
+
+
