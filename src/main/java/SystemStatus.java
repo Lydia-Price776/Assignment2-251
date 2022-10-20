@@ -1,5 +1,3 @@
-import org.apache.log4j.spi.LoggingEvent;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,9 +35,9 @@ public class SystemStatus implements SystemStatusMBean {
 
     @Override
     public void setSizeCachedLogs () {
-        List list = MemAppender.getInstance(new ArrayList<>()).getEventStrings();
-        for (int i = 0; i < list.size(); i++ ){
-            this.cacheSize += list.get(i).toString().length();
+        List<String> list = MemAppender.getInstance(new ArrayList<>()).getEventStrings();
+        for (Object o : list) {
+            this.cacheSize += o.toString().length();
         }
     }
 

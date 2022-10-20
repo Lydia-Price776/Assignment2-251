@@ -40,7 +40,7 @@ public class MemAppender extends AppenderSkeleton {
 
     @Override
     public Layout getLayout () {
-        return super.getLayout();
+        return layout;
     }
 
     @Override
@@ -58,7 +58,7 @@ public class MemAppender extends AppenderSkeleton {
 
     @Override
     public void setLayout (Layout layout) {
-        super.setLayout(layout);
+        this.layout = layout;
     }
 
     //Returns a list of unmodifiable LoggingEvents

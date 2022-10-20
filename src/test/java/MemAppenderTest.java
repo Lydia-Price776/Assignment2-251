@@ -36,14 +36,14 @@ class MemAppenderTest {
     public void setLayoutTest () {
         Layout simple = new SimpleLayout();
         appender.setLayout(simple);
-        assertEquals(simple, appender.getLayout());
+        assertEquals(simple, appender.getLayout(), "Appender layout not set correctly");
     }
 
     //Test that if there are no discarded logs, DiscardedLogs remains 0
     @Test
     public void testDiscardedLogs0 () {
         add10LogsToAppender();
-        assertEquals(0, appender.getDiscardedLogCount());
+        assertEquals(0, appender.getDiscardedLogCount(), "");
     }
 
     //Tests that the discarded logs are being recorded correctly
@@ -101,6 +101,7 @@ class MemAppenderTest {
         String output = getOutputFromPrintLogs();
         assertTrue(output.contains("DEBUG - Test Debug Log"));
     }
+
     @Test
     public void testPrintLogsGivenNoFormat () {
         logger.debug("Test Debug Log");
@@ -110,15 +111,15 @@ class MemAppenderTest {
     }
 
     @Test
-    public void adjustMaxSizeLessThanOriginalSize (){
+    public void adjustMaxSizeLessThanOriginalSize () {
         add10LogsToAppender();
         appender.setMaxSize(5);
         assumeTrue(appender.getEventStrings().size() == 5);
-        assertEquals("Trace 6" ,appender.getEventStrings().get(0));
+        assertEquals("Trace 6", appender.getEventStrings().get(0));
     }
 
     @Test
-    public void adjustMaxSizeGreaterThanOriginalSize (){
+    public void adjustMaxSizeGreaterThanOriginalSize () {
         add10LogsToAppender();
         appender.setMaxSize(20);
         assumeTrue(appender.getEventStrings().size() <= 20);
@@ -126,13 +127,14 @@ class MemAppenderTest {
     }
 
     @Test
-    public void addLogsAfterMaxSizeChanged (){
+    public void addLogsAfterMaxSizeChanged () {
         add10LogsToAppender();
         appender.setMaxSize(20);
         add30LogsToAppender();
         assumeTrue(appender.getEventStrings().size() == 20);
-        assertEquals("Error 3" ,appender.getEventStrings().get(0));
+        assertEquals("Error 3", appender.getEventStrings().get(0));
     }
+
     private static String getOutputFromPrintLogs () {
         ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
         System.setOut(new PrintStream(byteOutputStream));
