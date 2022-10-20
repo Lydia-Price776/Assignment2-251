@@ -2,6 +2,8 @@ import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Layout;
 import org.apache.log4j.spi.LoggingEvent;
 
+import javax.management.*;
+import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,6 +13,7 @@ public class MemAppender extends AppenderSkeleton {
     private List<LoggingEvent> logsList;
     private int maxSize = -1;
     private static MemAppender instance;
+    private static SystemStatus systemStatus;
 
 
     private MemAppender (List list) {
@@ -32,11 +35,12 @@ public class MemAppender extends AppenderSkeleton {
             increaseDiscardedLogCount();
             logsList.add(loggingEvent);
         }
+        systemStatus.updateValues();
     }
 
     @Override
     public Layout getLayout () {
-        return super.getLayout();
+        return layout;
     }
 
     @Override
@@ -44,6 +48,7 @@ public class MemAppender extends AppenderSkeleton {
         logsList.clear();
         discardedLogs = 0L;
         maxSize = -1;
+        systemStatus.updateValues();
     }
 
     @Override
@@ -53,7 +58,7 @@ public class MemAppender extends AppenderSkeleton {
 
     @Override
     public void setLayout (Layout layout) {
-        super.setLayout(layout);
+        this.layout = layout;
     }
 
     //Returns a list of unmodifiable LoggingEvents
@@ -96,17 +101,19 @@ public class MemAppender extends AppenderSkeleton {
         while (logsList.size() > maxSize) {
             logsList.remove(0);
         }
-
+        systemStatus.updateValues();
     }
 
     //Tracks number of discarded logs
     private void increaseDiscardedLogCount () {
         discardedLogs++;
+        systemStatus.updateValues();
     }
 
     public void setMaxSize (int maxSize) {
         this.maxSize = maxSize;
         adjustLogListSize();
+        systemStatus.updateValues();
     }
 
     public long getDiscardedLogCount () {
@@ -116,17 +123,24 @@ public class MemAppender extends AppenderSkeleton {
 
     public static MemAppender getInstance (List list) {
         if (instance == null) {
+            try {
+                systemStatus = new SystemStatus();
+                MBeanServer platformMBeanServer = ManagementFactory.getPlatformMBeanServer();
+                ObjectName objectName = new ObjectName("com.assignment2.MBeans:name=SystemStatus");
+                platformMBeanServer.registerMBean(systemStatus, objectName);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return instance = new MemAppender(list);
+
         } else {
             return instance;
         }
+
     }
 
     public int getMaxSize () {
         return maxSize;
     }
 
-    private void setListType () {
-
-    }
 }
