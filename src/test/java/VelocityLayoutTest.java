@@ -11,58 +11,57 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class VelocityLayoutTest {
     private static MemAppender memAppender;
-    private static ConsoleAppender consoleAppender;
-    private static FileAppender fileAppender;
-    private static Logger logger;
+    private static final Logger logger = Logger.getLogger("Test Logger");
     private static VelocityLayout velocityLayout;
 
     @BeforeAll
-    static void setup () {
+    public static void setup () {
         memAppender = MemAppender.getInstance(new ArrayList<>());
         BasicConfigurator.configure();
-        logger = Logger.getLogger("Test Logger");
         logger.setLevel(Level.TRACE);
         logger.setAdditivity(false);
         velocityLayout = new VelocityLayout("[$p] ($t) $d: $m $n");
     }
 
     @BeforeEach
-    void removeAppenders () {
+    public void removeAppenders () {
         logger.removeAllAppenders();
     }
 
     @AfterAll
-    static void removeTestData () throws IOException {
+    public static void removeTestData () throws IOException {
         Files.deleteIfExists(
                 Paths.get("testLogs.txt"));
         logger.removeAllAppenders();
     }
 
     @Test
-    void layoutWorksWithMemAppender () {
+    public void layoutWorksWithMemAppender () {
         logger.addAppender(memAppender);
         memAppender.setLayout(velocityLayout);
         logger.trace("Testing Trace Log");
-        assertEquals("[TRACE] (main) " + new java.util.Date() + ": Testing Trace Log \n"
-                , memAppender.getEventStrings().get(0));
+        assertEquals("[TRACE] (main) " + new Date() + ": Testing Trace Log \n"
+                , memAppender.getEventStrings().get(0), "VelocityLayout not formatting correctly");
     }
 
     @Test
-    void layoutWorksWithFileAppender () throws IOException {
-        fileAppender = new FileAppender(velocityLayout, "testLogs.txt");
+    public void layoutWorksWithFileAppender () throws IOException {
+        FileAppender fileAppender = new FileAppender(velocityLayout, "testLogs.txt");
         logger.addAppender(fileAppender);
         logger.trace("Testing Trace Log");
-        Date date = new java.util.Date();
+        Date date = new Date();
         FileReader fileReader = new FileReader("testLogs.txt");
         BufferedReader buffer = new BufferedReader(fileReader);
         String line = buffer.readLine();
-        assertEquals("[TRACE] (main) " + date + ": Testing Trace Log ", line);
+        assertEquals("[TRACE] (main) " + date + ": Testing Trace Log ", line,
+                "VelocityLayout not formatting correctly");
         fileReader.close();
+        buffer.close();
     }
 
     @Test
-    void layoutWorksWithConsoleAppender () {
-        consoleAppender = new ConsoleAppender(velocityLayout);
+    public void layoutWorksWithConsoleAppender () {
+        ConsoleAppender consoleAppender = new ConsoleAppender(velocityLayout);
         consoleAppender.activateOptions();
         logger.addAppender(consoleAppender);
         logger.trace("Test Console");

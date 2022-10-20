@@ -12,11 +12,12 @@ public class MemAppender extends AppenderSkeleton {
     private Long discardedLogs = 0L;
     private List<LoggingEvent> logsList;
     private int maxSize = -1;
-    private static MemAppender instance;
+    private static MemAppender instance = null;
     private static SystemStatus systemStatus;
 
 
-    private MemAppender (List list) {
+    private MemAppender (List<LoggingEvent> list) {
+        super();
         logsList = list;
     }
 
@@ -95,13 +96,13 @@ public class MemAppender extends AppenderSkeleton {
     }
 
     private void adjustLogListSize () {
-        if (logsList.size() == 0) {
-            return;
+        if (logsList.size() != 0) {
+            while (logsList.size() > maxSize) {
+                logsList.remove(0);
+            }
+            systemStatus.updateValues();
         }
-        while (logsList.size() > maxSize) {
-            logsList.remove(0);
-        }
-        systemStatus.updateValues();
+
     }
 
     //Tracks number of discarded logs
@@ -121,7 +122,7 @@ public class MemAppender extends AppenderSkeleton {
     }
 
 
-    public static MemAppender getInstance (List list) {
+    public static MemAppender getInstance (List<LoggingEvent> list) {
         if (instance == null) {
             try {
                 systemStatus = new SystemStatus();

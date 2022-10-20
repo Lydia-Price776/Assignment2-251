@@ -13,20 +13,19 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 class MemAppenderTest {
     private static MemAppender appender;
-    private static Logger logger;
+    private static final Logger logger = Logger.getLogger("Test Logger");
 
     @BeforeAll
-    static void setUp () {
+    public static void setUp () {
         appender = MemAppender.getInstance(new ArrayList<>());
         BasicConfigurator.configure();
-        logger = Logger.getLogger("Test Logger");
         logger.addAppender(appender);
         logger.setAdditivity(false);
         logger.setLevel(Level.TRACE);
     }
 
     @BeforeEach
-    void resetAppender () {
+   public void resetAppender () {
         appender.close();
         appender.setLayout(null);
         appender.setMaxSize(10);
@@ -43,55 +42,58 @@ class MemAppenderTest {
     @Test
     public void testDiscardedLogs0 () {
         add10LogsToAppender();
-        assertEquals(0, appender.getDiscardedLogCount(), "");
+        assertEquals(0, appender.getDiscardedLogCount(), "Discarded logs not recording correctly");
     }
 
     //Tests that the discarded logs are being recorded correctly
     @Test
     public void testDiscardedLogsNon0 () {
         add30LogsToAppender();
-        assertEquals(20, appender.getDiscardedLogCount());
+        assertEquals(20, appender.getDiscardedLogCount(), "Discarded logs not recording correctly");
     }
 
     @Test
     public void testAppendNoDiscardedLogs () {
         add10LogsToAppender();
         assumeTrue(appender.getCurrentLogs().size() == 10);
-        assertEquals("Trace 1", appender.getCurrentLogs().get(0).getMessage());
+        assertEquals("Trace 1", appender.getCurrentLogs().get(0).getMessage(),
+                "Logs not being appended correctly");
     }
 
     @Test
     public void testAppendWithDiscardedLogs () {
         add30LogsToAppender();
         assumeTrue(appender.getCurrentLogs().size() == 10);
-        assertEquals("Info 6", appender.getCurrentLogs().get(0).getMessage());
+        assertEquals("Info 6", appender.getCurrentLogs().get(0).getMessage(), "Logs not being appended correctly");
     }
 
     @Test
     public void testGetCurrentLogsUnmodifiable () {
         add10LogsToAppender();
-        assertTrue(appender.getCurrentLogs().getClass().getName().contains("Unmodifiable"));
+        assertTrue(appender.getCurrentLogs().getClass().getName().contains("Unmodifiable"), "Modifiable list was supplied");
     }
 
     @Test
     public void testGetEventStringUnmodifiable () {
         add10LogsToAppender();
         assumeTrue(appender.getEventStrings().size() > 0);
-        assertTrue(appender.getEventStrings().getClass().getName().contains("Unmodifiable"));
+        assertTrue(appender.getEventStrings().getClass().getName().contains("Unmodifiable"), "Modifiable list was supplied");
     }
 
     @Test
     public void testGetEventStringGivenFormat () {
         logger.debug("Test Debug Log");
         appender.setLayout(new SimpleLayout());
-        assertEquals("DEBUG - Test Debug Log\n", appender.getEventStrings().get(0));
+        assertEquals("DEBUG - Test Debug Log\n", appender.getEventStrings().get(0),
+                "Logs not appended correctly with layout");
     }
 
     @Test
     public void testGetEventStringNoGivenFormat () {
         appender.setLayout(null);
         logger.debug("Test Debug Log");
-        assertEquals("Test Debug Log", appender.getEventStrings().get(0));
+        assertEquals("Test Debug Log", appender.getEventStrings().get(0),
+                "Logs not appended correctly with no layout");
     }
 
     @Test
@@ -99,7 +101,8 @@ class MemAppenderTest {
         logger.debug("Test Debug Log");
         appender.setLayout(new SimpleLayout());
         String output = getOutputFromPrintLogs();
-        assertTrue(output.contains("DEBUG - Test Debug Log"));
+        assertTrue(output.contains("DEBUG - Test Debug Log"),
+                "Logs not printing correctly with layout");
     }
 
     @Test
@@ -107,7 +110,7 @@ class MemAppenderTest {
         logger.debug("Test Debug Log");
         appender.setLayout(null);
         String output = getOutputFromPrintLogs();
-        assertTrue(output.contains("Test Debug Log"));
+        assertTrue(output.contains("Test Debug Log"), "Logs not printing correctly with no layout");
     }
 
     @Test
@@ -115,7 +118,8 @@ class MemAppenderTest {
         add10LogsToAppender();
         appender.setMaxSize(5);
         assumeTrue(appender.getEventStrings().size() == 5);
-        assertEquals("Trace 6", appender.getEventStrings().get(0));
+        assertEquals("Trace 6", appender.getEventStrings().get(0),
+                "Max size not updating logsList correctly");
     }
 
     @Test
@@ -123,7 +127,8 @@ class MemAppenderTest {
         add10LogsToAppender();
         appender.setMaxSize(20);
         assumeTrue(appender.getEventStrings().size() <= 20);
-        assertEquals(20, appender.getMaxSize());
+        assertEquals(20, appender.getMaxSize(),
+                "Max size not updating logsList correctly");
     }
 
     @Test
@@ -132,7 +137,8 @@ class MemAppenderTest {
         appender.setMaxSize(20);
         add30LogsToAppender();
         assumeTrue(appender.getEventStrings().size() == 20);
-        assertEquals("Error 3", appender.getEventStrings().get(0));
+        assertEquals("Error 3", appender.getEventStrings().get(0),
+                "Max size not updating logsList correctly");
     }
 
     private static String getOutputFromPrintLogs () {

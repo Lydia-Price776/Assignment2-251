@@ -2,7 +2,7 @@ import java.util.List;
 
 public interface SystemStatusMBean {
     Integer getSizeCachedLogs();
-    List getLogMessages();
+    List<String> getLogMessages();
     Long getDiscardedLogs();
      void setSizeCachedLogs();
      void setLogMessages();

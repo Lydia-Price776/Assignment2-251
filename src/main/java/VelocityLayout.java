@@ -9,15 +9,17 @@ import java.util.Date;
 public class VelocityLayout extends Layout {
     private String pattern;
 
-    public VelocityLayout(String newPattern) {
+    public VelocityLayout (String newPattern) {
+        super();
         pattern = newPattern;
     }
 
-    public void activateOptions() {
+    @Override
+    public void activateOptions () {
     }
 
-
-    public String format(LoggingEvent event) {
+    @Override
+    public String format (LoggingEvent event) {
         VelocityContext context = new VelocityContext();
         context.put("c", event.getLogger()); // Not sure about the category output
         context.put("d", new Date(event.getTimeStamp()));
@@ -30,11 +32,12 @@ public class VelocityLayout extends Layout {
         return writer.toString();
     }
 
-    public boolean ignoresThrowable() {
+    @Override
+    public boolean ignoresThrowable () {
         return true;
     }
 
-    public void setPattern(String newPattern) {
+    public void setPattern (String newPattern) {
         pattern = newPattern;
     }
 }

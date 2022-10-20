@@ -6,7 +6,7 @@ public class SystemStatus implements SystemStatusMBean {
     private Integer cacheSize;
     private List logMessages;
     private long discardedLogs;
-    SystemStatus () {
+    public SystemStatus () {
         this.logMessages = null;
         this.cacheSize = 0;
         this.discardedLogs = 0;
