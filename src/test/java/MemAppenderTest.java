@@ -17,7 +17,7 @@ class MemAppenderTest {
 
     @BeforeAll
     static void setUp () {
-        appender = MemAppender.getInstance(new ArrayList());
+        appender = MemAppender.getInstance(new ArrayList<>());
         BasicConfigurator.configure();
         logger = Logger.getLogger("Test Logger");
         logger.addAppender(appender);
