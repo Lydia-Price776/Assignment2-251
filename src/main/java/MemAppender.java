@@ -16,6 +16,7 @@ public class MemAppender extends AppenderSkeleton {
     private static SystemStatus systemStatus;
 
 
+    //Private inorder to follow singleton pattern
     private MemAppender (List<LoggingEvent> list) {
         super();
         logsList = list;
@@ -24,7 +25,7 @@ public class MemAppender extends AppenderSkeleton {
     @Override
     protected void append (LoggingEvent loggingEvent) {
 
-        //maxSize has not been supplied
+        //if maxSize has not been supplied
         if (maxSize == -1) {
             logsList.add(loggingEvent);
         }
@@ -36,7 +37,9 @@ public class MemAppender extends AppenderSkeleton {
             increaseDiscardedLogCount();
             logsList.add(loggingEvent);
         }
-        systemStatus.updateValues();
+        //systemStatus.updateValues(); commented out as is more useful in a 'main' program environment
+        //this would automatically update the values in the mBeans object as opposed to calling the method
+        // itself in a profiler
     }
 
     @Override
@@ -49,7 +52,7 @@ public class MemAppender extends AppenderSkeleton {
         logsList.clear();
         discardedLogs = 0L;
         maxSize = -1;
-        systemStatus.updateValues();
+        //systemStatus.updateValues(); see comment above
     }
 
     @Override
@@ -89,32 +92,28 @@ public class MemAppender extends AppenderSkeleton {
                 System.out.println(loggingEvent.getRenderedMessage());
             }
         }
-        for (int i = 0; i < logsList.size(); i++) {
-            logsList.remove(i);
-            increaseDiscardedLogCount();
-        }
+        logsList.clear();
+        //printLogs() does not contribute to discarded logs
     }
 
+    //If the maxSize is changed, then the logList size is adjusted accordingly
     private void adjustLogListSize () {
         if (logsList.size() != 0) {
             while (logsList.size() > maxSize) {
                 logsList.remove(0);
             }
-            systemStatus.updateValues();
         }
 
     }
 
-    //Tracks number of discarded logs
+    //Tracks number of discarded logs when the maxSize is exceeded
     private void increaseDiscardedLogCount () {
         discardedLogs++;
-        systemStatus.updateValues();
     }
 
     public void setMaxSize (int maxSize) {
         this.maxSize = maxSize;
         adjustLogListSize();
-        systemStatus.updateValues();
     }
 
     public long getDiscardedLogCount () {
@@ -122,6 +121,7 @@ public class MemAppender extends AppenderSkeleton {
     }
 
 
+    //To implement the singleton pattern and ensure only one instance is created
     public static MemAppender getInstance (List<LoggingEvent> list) {
         if (instance == null) {
             try {

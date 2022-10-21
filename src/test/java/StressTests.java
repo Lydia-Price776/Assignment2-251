@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class StressTests {
-    private static final Logger logger = Logger.getLogger("Test Logger");
+    private static Logger logger;
     private static MemAppender memAppender;
     private static VelocityLayout velocityLayout;
 
@@ -21,6 +21,7 @@ public class StressTests {
     @BeforeAll
     public static void setup () {
         BasicConfigurator.configure();
+        logger = Logger.getLogger("Tester");
         logger.setAdditivity(false);
         velocityLayout = new VelocityLayout("[$p] ($t) $d: $m $n");
         patternLayout = new PatternLayout("[$p] ($t) $d: $m $n");
@@ -38,104 +39,118 @@ public class StressTests {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {1, 10, 1_000, 10_000, 100_000, 1_000_000})
+    @ValueSource(ints = {1, 10, 1000, 10000, 100000, 1000000})
     public void memAppenderAppendStressTestArrayListVelocityLayout (int size) throws InterruptedException {
         memAppender = MemAppender.getInstance(new ArrayList<>());
         memAppender.setMaxSize(size);
         memAppender.setLayout(velocityLayout);
         logger.addAppender(memAppender);
-        Thread.sleep(10_000);
-        for (int i = 0; i < 100_000; i++) {
+        Thread.sleep(10000);
+        for (int i = 0; i < 100000; i++) {
             logger.error("Test number " + i, new Exception());
         }
+        Thread.sleep(1000);
+
         memAppender.close();
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {1, 10, 1_000, 10_000, 100_000, 1_000_000})
+    @ValueSource(ints = {1, 10, 1000, 10000, 100000, 1000000})
     public void memAppenderAppendStressTestArrayListPatternLayout (int size) throws InterruptedException {
         memAppender = MemAppender.getInstance(new ArrayList<>());
         memAppender.setMaxSize(size);
         memAppender.setLayout(patternLayout);
         logger.addAppender(memAppender);
-        Thread.sleep(10_000);
-        for (int i = 0; i < 100_000; i++) {
+        Thread.sleep(10000);
+        for (int i = 0; i < 100000; i++) {
             logger.error("Test number " + i, new Exception());
         }
+        Thread.sleep(1000);
+
         memAppender.close();
+
     }
 
 
     @ParameterizedTest
-    @ValueSource(ints = {1, 10, 1_000, 10_000, 100_000, 1_000_000})
+    @ValueSource(ints = {1, 10, 1000, 10000, 100000, 1000000})
     public void memAppenderAppendStressTestLinkedListVelocityLayout (int size) throws InterruptedException {
         memAppender = MemAppender.getInstance(new LinkedList<>());
         memAppender.setMaxSize(size);
         memAppender.setLayout(velocityLayout);
         logger.addAppender(memAppender);
-        Thread.sleep(10_000);
-        for (int i = 0; i < 100_000; i++) {
+        Thread.sleep(10000);
+        for (int i = 0; i < 100000; i++) {
             logger.error("Test number " + i, new Exception());
         }
+        Thread.sleep(1000);
         memAppender.close();
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {1, 10, 1_000, 10_000, 100_000, 1_000_000})
+    @ValueSource(ints = {1, 10, 1000, 10000, 100000, 1000000})
     public void memAppenderAppendStressTestLinkedListPatternLayout (int size) throws InterruptedException {
         memAppender = MemAppender.getInstance(new LinkedList<>());
         memAppender.setMaxSize(size);
         memAppender.setLayout(patternLayout);
         logger.addAppender(memAppender);
-        Thread.sleep(10_000);
-        for (int i = 0; i < 100_000; i++) {
+        Thread.sleep(10000);
+        for (int i = 0; i < 100000; i++) {
             logger.error("Test number " + i, new Exception());
         }
+        Thread.sleep(1000);
         memAppender.close();
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {1, 10, 1_000, 10_000, 100_000})
+    @ValueSource(ints = {1, 10, 1000, 10000, 100000})
     public void fileAppenderVelocityLayoutStressTest (int logNum) throws IOException, InterruptedException {
         FileAppender fileAppender = new FileAppender(velocityLayout, "testLogs.txt");
         logger.addAppender(fileAppender);
-        Thread.sleep(10_000);
+        Thread.sleep(10000);
         for (int i = 0; i < logNum; i++) {
             logger.error("Test number " + i, new Exception());
         }
+        Thread.sleep(1000);
+        fileAppender.close();
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {1, 10, 1_000, 10_000, 100_000})
+    @ValueSource(ints = {1, 10, 1000, 10000, 100000})
     public void fileAppenderPatternLayoutStressTest (int logNum) throws IOException, InterruptedException {
         FileAppender fileAppender = new FileAppender(patternLayout, "testLogs.txt");
         logger.addAppender(fileAppender);
-        Thread.sleep(10_000);
+        Thread.sleep(10000);
         for (int i = 0; i < logNum; i++) {
             logger.error("Test number " + i, new Exception());
         }
+        Thread.sleep(1000);
+        fileAppender.close();
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {1, 10, 1_000, 10_000, 100_000})
+    @ValueSource(ints = {1, 10, 1000, 10000, 100000})
     public void consoleAppenderVelocityLayoutStressTest (int logNum) throws InterruptedException {
         ConsoleAppender consoleAppender = new ConsoleAppender(velocityLayout);
         logger.addAppender(consoleAppender);
-        Thread.sleep(10_000);
+        Thread.sleep(10000);
         for (int i = 0; i < logNum; i++) {
             logger.error("Test number " + i, new Exception());
         }
+        Thread.sleep(1000);
+        consoleAppender.close();
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {1, 10, 1_000, 10_000, 100_000})
+    @ValueSource(ints = {1, 10, 1000, 10000, 100000})
     public void consoleAppenderPatternLayoutStressTest (int logNum) throws InterruptedException {
         ConsoleAppender consoleAppender = new ConsoleAppender(patternLayout);
         logger.addAppender(consoleAppender);
-        Thread.sleep(10_000);
+        Thread.sleep(10000);
         for (int i = 0; i < logNum; i++) {
             logger.error("Test number " + i, new Exception());
         }
+        consoleAppender.close();
     }
 }
 

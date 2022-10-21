@@ -1,9 +1,9 @@
 import java.util.List;
 
 public interface SystemStatusMBean {
-    Integer getSizeCachedLogs();
+    long getSizeCachedLogs();
     List<String> getLogMessages();
-    Long getDiscardedLogs();
+    long getDiscardedLogs();
      void setSizeCachedLogs();
      void setLogMessages();
      void setDiscardedLogs();

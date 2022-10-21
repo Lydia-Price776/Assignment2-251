@@ -3,12 +3,12 @@ import java.util.List;
 
 public class SystemStatus implements SystemStatusMBean {
 
-    private Integer cacheSize;
+    private long cacheSize;
     private List logMessages;
     private long discardedLogs;
     public SystemStatus () {
         this.logMessages = null;
-        this.cacheSize = 0;
+        this.cacheSize = 0L;
         this.discardedLogs = 0;
     }
 
@@ -19,7 +19,7 @@ public class SystemStatus implements SystemStatusMBean {
     }
 
     @Override
-    public Integer getSizeCachedLogs () {
+    public long getSizeCachedLogs () {
         return this.cacheSize;
     }
 
@@ -29,16 +29,18 @@ public class SystemStatus implements SystemStatusMBean {
     }
 
     @Override
-    public Long getDiscardedLogs () {
+    public long getDiscardedLogs () {
         return this.discardedLogs;
     }
 
     @Override
     public void setSizeCachedLogs () {
-        List<String> list = MemAppender.getInstance(new ArrayList<>()).getEventStrings();
-        for (Object o : list) {
-            this.cacheSize += o.toString().length();
+      List<String> eventStrings = MemAppender.getInstance(new ArrayList<>()).getEventStrings();
+      long characters = 0L;
+        for (String eventString : eventStrings) {
+            characters += eventString.length();
         }
+      this.cacheSize = characters;
     }
 
     @Override
