@@ -27,12 +27,11 @@ public class SystemStatusTests {
         memAppender = MemAppender.getInstance( new ArrayList<>());
         memAppender.setLayout(new SimpleLayout());
         logger.addAppender(memAppender);
-        systemStatus = memAppender.getSystemStatus();
     }
     @BeforeEach
     public void setMaxSize(){
         memAppender.setMaxSize(1);
-
+        systemStatus = memAppender.getSystemStatus();
     }
     @AfterEach
     public void resetAppender(){
