@@ -64,7 +64,7 @@ public class SystemStatusTests {
     @Test
     public void testSetCachedLogsZero () {
         systemStatus.setSizeCachedLogs();
-        assertEquals(1,systemStatus.getSizeCachedLogs());
+        assertEquals(0,systemStatus.getSizeCachedLogs());
     }
 
     @Test
