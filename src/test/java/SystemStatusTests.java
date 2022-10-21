@@ -26,14 +26,17 @@ public class SystemStatusTests {
         logger.setLevel(Level.TRACE);
         memAppender = MemAppender.getInstance( new ArrayList<>());
         memAppender.setLayout(new SimpleLayout());
-        memAppender.setMaxSize(1);
         logger.addAppender(memAppender);
         systemStatus = memAppender.getSystemStatus();
+    }
+    @BeforeEach
+    public void setMaxSize(){
+        memAppender.setMaxSize(1);
+
     }
     @AfterEach
     public void resetAppender(){
         memAppender.close();
-        memAppender.setMaxSize(1);
     }
 
     @Test
