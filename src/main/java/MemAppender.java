@@ -28,8 +28,7 @@ public class MemAppender extends AppenderSkeleton {
         //if maxSize has not been supplied
         if (maxSize == -1) {
             logsList.add(loggingEvent);
-        }
-        if (logsList.size() <= maxSize - 1) {
+        } else if (logsList.size() <= maxSize - 1) {
             logsList.add(loggingEvent);
         } else {
             //The log in index position 0 will always be the oldest
@@ -145,4 +144,7 @@ public class MemAppender extends AppenderSkeleton {
         return maxSize;
     }
 
+    public SystemStatus getSystemStatus () {
+        return systemStatus;
+    }
 }
