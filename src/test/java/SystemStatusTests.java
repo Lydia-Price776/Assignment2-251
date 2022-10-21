@@ -40,7 +40,6 @@ public class SystemStatusTests {
 
     @Test
     public void testSetSizeDiscardedLogs0 () {
-        logger.error("Test Error");
         systemStatus.setDiscardedLogs();
         assertEquals(0,systemStatus.getDiscardedLogs());
     }
@@ -60,6 +59,12 @@ public class SystemStatusTests {
         systemStatus.setLogMessages();
         assertEquals("ERROR - Test Error\n",systemStatus.getLogMessages().get(0));
 
+    }
+
+    @Test
+    public void testSetCachedLogsZero () {
+        systemStatus.setSizeCachedLogs();
+        assertEquals(1,systemStatus.getSizeCachedLogs());
     }
 
     @Test
