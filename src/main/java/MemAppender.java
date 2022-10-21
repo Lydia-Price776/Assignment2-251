@@ -122,6 +122,7 @@ public class MemAppender extends AppenderSkeleton {
 
 
     //To implement the singleton pattern and ensure only one instance is created
+    // Also creates an mBeans object everytime an instance is created
     public static MemAppender getInstance (List<LoggingEvent> list) {
         if (instance == null) {
             try {

@@ -19,7 +19,7 @@ class VelocityLayoutTest {
         memAppender = MemAppender.getInstance(new ArrayList<>());
         BasicConfigurator.configure();
         logger.setLevel(Level.TRACE);
-        logger.setAdditivity(false);
+        logger.setAdditivity(false); // to avoid an excessive amount of logs printed to console
         velocityLayout = new VelocityLayout("[$p] ($t) $d: $m $n");
     }
 

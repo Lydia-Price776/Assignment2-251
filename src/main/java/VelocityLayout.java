@@ -18,6 +18,7 @@ public class VelocityLayout extends Layout {
     public void activateOptions () {
     }
 
+    //Specifies formatting conditions
     @Override
     public String format (LoggingEvent event) {
         VelocityContext context = new VelocityContext();

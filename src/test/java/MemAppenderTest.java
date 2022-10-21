@@ -20,7 +20,7 @@ class MemAppenderTest {
         appender = MemAppender.getInstance(new ArrayList<>());
         BasicConfigurator.configure();
         logger.addAppender(appender);
-        logger.setAdditivity(false);
+        logger.setAdditivity(false); // to avoid an excessive amount of logs printed to console
         logger.setLevel(Level.TRACE);
     }
 
@@ -141,6 +141,7 @@ class MemAppenderTest {
                 "Max size not updating logsList correctly");
     }
 
+    //creates a print stream in order to avoid logs being printed to console unnecessarily
     private static String getOutputFromPrintLogs () {
         ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
         System.setOut(new PrintStream(byteOutputStream));
