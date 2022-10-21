@@ -63,12 +63,6 @@ public class SystemStatusTests {
     }
 
     @Test
-    public void testSetCachedLogsZero () {
-        systemStatus.setSizeCachedLogs();
-        assertEquals(0,systemStatus.getSizeCachedLogs());
-    }
-
-    @Test
     public void testSetCachedLogsNonZero () {
         logger.error("Test Error");
         systemStatus.setSizeCachedLogs();
