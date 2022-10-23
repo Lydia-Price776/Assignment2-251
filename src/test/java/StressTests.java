@@ -2,6 +2,7 @@ import org.apache.log4j.*;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -15,7 +16,6 @@ public class StressTests {
     private static Logger logger;
     private static MemAppender memAppender;
     private static VelocityLayout velocityLayout;
-
     private static PatternLayout patternLayout;
 
     @BeforeAll
@@ -34,8 +34,8 @@ public class StressTests {
 
     @AfterAll
     public static void removeTestData () throws IOException {
-        //Files.deleteIfExists(
-              //  Paths.get("testLogs.txt"));
+        Files.deleteIfExists(
+          Paths.get("testLogs.txt"));
     }
 
     @ParameterizedTest
@@ -130,6 +130,7 @@ public class StressTests {
 
     @ParameterizedTest
     @ValueSource(ints = {1, 10, 1000, 10000, 100000})
+    @Tag("Console")
     public void consoleAppenderVelocityLayoutStressTest (int logNum) {
         ConsoleAppender consoleAppender = new ConsoleAppender(velocityLayout);
         logger.addAppender(consoleAppender);
@@ -140,9 +141,9 @@ public class StressTests {
         //  Thread.sleep(1000);  used for profiling purposes
         consoleAppender.close();
     }
-
     @ParameterizedTest
     @ValueSource(ints = {1, 10, 1000, 10000, 100000})
+    @Tag("Console")
     public void consoleAppenderPatternLayoutStressTest (int logNum) {
         ConsoleAppender consoleAppender = new ConsoleAppender(patternLayout);
         logger.addAppender(consoleAppender);
