@@ -12,6 +12,7 @@ public class SystemStatus implements SystemStatusMBean {
         this.discardedLogs = 0;
     }
 
+    //Used for automatically updating the MBean Object
     public void updateValues(){
         setDiscardedLogs();
         setLogMessages();
